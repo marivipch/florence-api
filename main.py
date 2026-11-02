@@ -124,35 +124,7 @@ def crear_paciente(p: PacienteCompleto):
         return {"mensaje": "Paciente y consulta registrados con éxito"}
     db.close()
 
-@app.get("/pacientes/{uid}/consultas")
-def obtener_consultas(uid: str):
-    db = get_db()
-    with db.cursor() as cursor:
-        cursor.execute("SELECT nombre FROM paciente WHERE UPPER(uid) = UPPER(%s);", (uid,))
-        pac = cursor.fetchone()
-        if not pac:
-            raise HTTPException(status_code=404, detail="Paciente no encontrado")
-            
-        cursor.execute("""
-            SELECT m.nombre, m.codigo_registro AS codigoRegistro, m.especialidad,
-                   cm.motivo_consulta AS motivoConsulta, cm.diagnostico, 
-                   cm.fecha_consulta AS fechaConsulta,
-                   cm.temperatura AS temp, 
-                   cm.frecuencia_cardiaca AS fc, 
-                   cm.frecuencia_respiratoria AS fr
-            FROM consulta_medica cm
-            JOIN medico m ON cm.codigo_registro_medico = m.codigo_registro
-            WHERE UPPER(cm.uid_paciente) = UPPER(%s);
-        """, (uid,))
-        consultas = cursor.fetchall()
-        
-        return {
-            "paciente": pac["nombre"],
-            "uid": uid,
-            "totalConsultas": len(consultas),
-            "consultas": consultas
-        }
-    db.close()
+
 
 class LoginRequest(BaseModel):
     codigo: int
