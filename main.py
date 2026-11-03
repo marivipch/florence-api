@@ -164,7 +164,6 @@ def obtener_ultimo_uid():
     return ultimo_uid_leido
 
 
-# --- Agregar esto junto a tus otras variables globales y modelos ---
 ultimo_sensor_leido = {"bpm": 0, "valido": False, "presencia": False}
 
 class SensorModel(BaseModel):
