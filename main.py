@@ -147,8 +147,7 @@ def login_medico(credenciales: LoginRequest):
         return medico
     db.close()
 
-# Variable en memoria para almacenar el último UID leído por el ESP32
-# Variable en memoria para almacenar el último UID leído por el ESP32
+
 ultimo_uid_leido = {"uid": ""}
 
 class UidModel(BaseModel):
@@ -163,3 +162,26 @@ def registrar_uid_lector(data: UidModel):
 @app.get("/api/lector/ultimo", response_model=UidModel)
 def obtener_ultimo_uid():
     return ultimo_uid_leido
+
+
+# --- Agregar esto junto a tus otras variables globales y modelos ---
+ultimo_sensor_leido = {"bpm": 0, "valido": False, "presencia": False}
+
+class SensorModel(BaseModel):
+    bpm: int
+    valido: bool
+    presencia: bool
+
+@app.post("/api/sensor/registrar")
+def registrar_sensor(data: SensorModel):
+    global ultimo_sensor_leido
+    ultimo_sensor_leido = {
+        "bpm": data.bpm,
+        "valido": data.valido,
+        "presencia": data.presencia
+    }
+    return {"mensaje": "Datos del sensor actualizados con éxito"}
+
+@app.get("/api/sensor/ultimo", response_model=SensorModel)
+def obtener_ultimo_sensor():
+    return ultimo_sensor_leido
