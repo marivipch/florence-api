@@ -148,6 +148,7 @@ def login_medico(credenciales: LoginRequest):
     db.close()
 
 # Variable en memoria para almacenar el último UID leído por el ESP32
+# Variable en memoria para almacenar el último UID leído por el ESP32
 ultimo_uid_leido = {"uid": ""}
 
 class UidModel(BaseModel):
@@ -159,6 +160,6 @@ def registrar_uid_lector(data: UidModel):
     ultimo_uid_leido["uid"] = data.uid.upper()
     return {"mensaje": "UID actualizado correctamente", "uid": ultimo_uid_leido["uid"]}
 
-@app.get("/api/lector/ultimo")
+@app.get("/api/lector/ultimo", response_model=UidModel)
 def obtener_ultimo_uid():
     return ultimo_uid_leido
